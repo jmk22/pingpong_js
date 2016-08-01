@@ -3,8 +3,8 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var concat = require('gulp-concat');
 
-gulp.task('jsBrowserify', function() {
-  return browserify({ entries: ['./js/pingpong-interface.js'] })
+gulp.task('jsBrowserify', ['concatInterface'], function() {
+  return browserify({ entries: ['./tmp/allConcat.js'] })
     .bundle()
     .pipe(source('app.js'))
     .pipe(gulp.dest('./build/js'));
