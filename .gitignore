@@ -2,3 +2,5 @@ node_modules/
 build/
 tmp/
 .DS_Store
+.env
+bower_components/
