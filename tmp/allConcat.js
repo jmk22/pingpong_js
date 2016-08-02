@@ -39,18 +39,24 @@ $(document).ready(function(){
   $('#time').text(moment());
 });
 
-var apiKey = require('./../.env').apiKey;
+var Weather = require('./../js/weather.js').weatherModule;
+
+var displayHumidity = function(city, humidityData){
+  $('.showWeather').text('The humidity in ' + city + " is " + humidityData + '%');
+}
+
+var interfaceFunction = function(a, b){
+  $('.texttest').text(a+b);
+}
 
 $(document).ready(function(){
+  var currentWeatherObject = new Weather();
   $('#weatherLocation').click(function(){
     var city = $('#location').val();
-    $('#location').val("");
-    $('.showWeather').text("The city you have chosen is " + city + ".");
-    $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey).then(function(response){
-      console.log("The humidity in " + city + " is " + response.main.humidity + "%");
-    }).fail(function(error){
-      $('.showWeather').text(error.responseJSON.message);
-    });
-    console.log("Notice: the GET request has been made.");
+    var f = $('#q').val();
+    var w = $('#t').val();
+
+    $('#location').val('');
+    currentWeatherObject.getWeather(city, displayHumidity, interfaceFunction, f, w);
   });
 });

@@ -29,6 +29,23 @@ Calculator.prototype.addition = function(number1, number2) {
 exports.calculatorModule = Calculator;
 
 },{}],3:[function(require,module,exports){
+var apiKey = require('./../.env').apiKey;
+
+function Weather(){
+}
+
+Weather.prototype.getWeather = function(city, displayFunction, x123, u, p) {
+  $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey).then(function(response){
+    x123(u,p);
+    displayFunction(city, response.main.humidity);
+  }).fail(function(error){
+    $('.showWeather').text(error.responseJSON.message);
+  });
+}
+
+exports.weatherModule = Weather;
+
+},{"./../.env":1}],4:[function(require,module,exports){
 var Calculator = require('./../js/pingpong.js').calculatorModule;
 
 $(document).ready(function() {
@@ -70,20 +87,26 @@ $(document).ready(function(){
   $('#time').text(moment());
 });
 
-var apiKey = require('./../.env').apiKey;
+var Weather = require('./../js/weather.js').weatherModule;
+
+var displayHumidity = function(city, humidityData){
+  $('.showWeather').text('The humidity in ' + city + " is " + humidityData + '%');
+}
+
+var interfaceFunction = function(a, b){
+  $('.texttest').text(a+b);
+}
 
 $(document).ready(function(){
+  var currentWeatherObject = new Weather();
   $('#weatherLocation').click(function(){
     var city = $('#location').val();
-    $('#location').val("");
-    $('.showWeather').text("The city you have chosen is " + city + ".");
-    $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey).then(function(response){
-      console.log("The humidity in " + city + " is " + response.main.humidity + "%");
-    }).fail(function(error){
-      $('.showWeather').text(error.responseJSON.message);
-    });
-    console.log("Notice: the GET request has been made.");
+    var f = $('#q').val();
+    var w = $('#t').val();
+
+    $('#location').val('');
+    currentWeatherObject.getWeather(city, displayHumidity, interfaceFunction, f, w);
   });
 });
 
-},{"./../.env":1,"./../js/pingpong.js":2}]},{},[3]);
+},{"./../js/pingpong.js":2,"./../js/weather.js":3}]},{},[4]);
